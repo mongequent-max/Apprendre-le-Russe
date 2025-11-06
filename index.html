@@ -116,14 +116,14 @@ const russianLearning = [
     { cyr: 'А', trans: ['a'], type: 'lettre' },
     { cyr: 'Б', trans: ['b'], type: 'lettre' },
     { cyr: 'В', trans: ['v'], type: 'lettre' },
-    { cyr: 'Г', trans: ['gh','g'], type: 'lettre' },
+    { cyr: 'Г', trans: ['g'], type: 'lettre' },
     { cyr: 'Д', trans: ['d'], type: 'lettre' },
     { cyr: 'Е', trans: ['yé','ïe'], type: 'lettre' },
     { cyr: 'Ё', trans: ['yo','ïo'], type: 'lettre' },
     { cyr: 'Ж', trans: ['j'], type: 'lettre' },
     { cyr: 'З', trans: ['z'], type: 'lettre' },
     { cyr: 'И', trans: ['i'], type: 'lettre' },
-    { cyr: 'Й', trans: ['ille','ï'], type: 'lettre' },
+    { cyr: 'Й', trans: ['ï'], type: 'lettre' },
     { cyr: 'К', trans: ['k'], type: 'lettre' },
     { cyr: 'Л', trans: ['l'], type: 'lettre' },
     { cyr: 'М', trans: ['m'], type: 'lettre' },
@@ -131,7 +131,7 @@ const russianLearning = [
     { cyr: 'О', trans: ['o'], type: 'lettre' },
     { cyr: 'П', trans: ['p'], type: 'lettre' },
     { cyr: 'Р', trans: ['r'], type: 'lettre' },
-    { cyr: 'С', trans: ['s','ss'], type: 'lettre' },
+    { cyr: 'С', trans: ['s'], type: 'lettre' },
     { cyr: 'Т', trans: ['t'], type: 'lettre' },
     { cyr: 'У', trans: ['ou'], type: 'lettre' },
     { cyr: 'Ф', trans: ['f'], type: 'lettre' },
@@ -143,7 +143,7 @@ const russianLearning = [
     { cyr: 'Ъ', trans: ['"'], type: 'lettre' },
     { cyr: 'Ы', trans: ['y'], type: 'lettre' },
     { cyr: 'Ь', trans: ["'"], type: 'lettre' },
-    { cyr: 'Э', trans: ['ê','e'], type: 'lettre' },
+    { cyr: 'Э', trans: ['e'], type: 'lettre' },
     { cyr: 'Ю', trans: ['you','ïou'], type: 'lettre' },
     { cyr: 'Я', trans: ['ya','ïa'], type: 'lettre' },
 
@@ -164,7 +164,7 @@ const russianLearning = [
     { cyr: 'александр', trans: ['aleksandr', 'alexandre'], type: 'mot', genre: 'm' },
     { cyr: 'бар', trans: ['bar', 'bar'], type: 'mot', genre: 'm' },
     { cyr: 'миллион', trans: ['million', 'million'], type: 'mot', genre: 'm' },
-    { cyr: 'елена', trans: ['liéna', 'elena'], type: 'mot', genre: 'f' },
+    { cyr: 'елена', trans: ['elena', 'elena'], type: 'mot', genre: 'f' },
     { cyr: 'лампа', trans: ['lampa', 'lampe'], type: 'mot', genre: 'f' },
     { cyr: 'кредит', trans: ['kredit', 'crédit'], type: 'mot', genre: 'm' },
     { cyr: 'космос', trans: ['kosmos', 'cosmos'], type: 'mot', genre: 'm' },
@@ -190,7 +190,7 @@ const russianLearning = [
     { cyr: 'чай', trans: ['tchaï', 'thé'], type: 'mot', genre: 'm' },
     { cyr: 'шофёр', trans: ['chofior', 'chauffeur'], type: 'mot', genre: 'm' },
     { cyr: 'генерал', trans: ['général', 'général'], type: 'mot', genre: 'm' },
-    { cyr: 'телефон', trans: ['téléfon', 'téléphone'], type: 'mot', genre: 'm' },
+    { cyr: 'телефон', trans: ['telefon', 'téléphone'], type: 'mot', genre: 'm' },
     { cyr: 'медицина', trans: ['meditsina', 'médecine'], type: 'mot', genre: 'f' },
     { cyr: 'цирк', trans: ['tsirk', 'cirque'], type: 'mot', genre: 'm' },
     { cyr: 'роза', trans: ['roza', 'rose'], type: 'mot', genre: 'f' },
@@ -234,7 +234,7 @@ const russianLearning = [
     { cyr: 'телеграф', trans: ['telegraf', 'télégraphe'], type: 'mot', genre: 'm' },
     { cyr: 'крокодил', trans: ['krokodil', 'crocodile'], type: 'mot', genre: 'm' },
     { cyr: 'инженер', trans: ['inzhener', 'ingénieur'], type: 'mot', genre: 'm' },
-    { cyr: 'эмигрант', trans: ['émigrant', 'émigrant'], type: 'mot', genre: 'm' },
+    { cyr: 'эмигрант', trans: ['emigrant', 'émigrant'], type: 'mot', genre: 'm' },
     { cyr: 'секретарь', trans: ['sekretar', 'secrétaire'], type: 'mot', genre: 'm' },
     { cyr: 'академия', trans: ['akademiya', 'académie'], type: 'mot', genre: 'f' },
     { cyr: 'оркестр', trans: ['orkestr', 'orchestre'], type: 'mot', genre: 'm' },
@@ -325,11 +325,6 @@ const russianLearning = [
     { cyr: 'а где живёт ваш брат?', trans: ['a gde zhivyot vash brat?','et où habite votre frère ?'], type: 'phrase' },
     { cyr: 'он живёт в Одессе', trans: ['on zhivyot v Odesse','il habite à Odessa'], type: 'phrase' },
     { cyr: 'о, это очень красивый город', trans: ['o, eto ochen krasivyy gorod','oh, c\'est une très jolie ville'], type: 'phrase' },
-
-    /////////////////////////////////////////////////////////////////////////
-
-    // Règle grammaticale
-    { cyr: 'Ж en fin de mot', trans: ['ch'], type: 'regle' }
 ];
 
 // ========================
@@ -414,5 +409,6 @@ nextQuestion();
 
 </body>
 </html>
+
 
 
