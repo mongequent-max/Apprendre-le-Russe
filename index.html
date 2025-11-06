@@ -37,8 +37,7 @@
 <div id="letter"></div>
 <input type="text" id="answer" placeholder="Écris la translittération ici">
 <div>
-    <button onclick="checkAnswer()">Valider</button>
-    <button onclick="nextQuestion()">Prochaine question</button>
+    <button id="actionButton">Valider</button>
 </div>
 <div id="result"></div>
 <div id="info"></div>
@@ -48,7 +47,6 @@
 // Base de données russe
 // ========================
 const russianLearning = [
-    // Lettres
     { cyr: 'А', trans: ['a'], type: 'lettre' },
     { cyr: 'Б', trans: ['b'], type: 'lettre' },
     { cyr: 'В', trans: ['v'], type: 'lettre' },
@@ -273,10 +271,13 @@ const russianLearning = [
 // ========================
 let currentItem = null;
 let scores = [];
+let answered = false; // état du bouton
 
-// Choisir un élément aléatoire
+const actionButton = document.getElementById('actionButton');
+
 function nextQuestion() {
-    answered = false; // réinitialisation
+    answered = false;
+    actionButton.textContent = "Valider";
     const index = Math.floor(Math.random() * russianLearning.length);
     currentItem = russianLearning[index];
     document.getElementById('letter').textContent = currentItem.cyr || '';
@@ -286,7 +287,6 @@ function nextQuestion() {
     document.getElementById('answer').focus();
 }
 
-// Vérifier la réponse
 function checkAnswer() {
     const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
     if (!currentItem) return;
@@ -296,7 +296,6 @@ function checkAnswer() {
     if (correctAnswers.includes(userAnswer)) {
         score = 20;
     } else {
-        // Partiel
         let bestPartial = 0;
         for (let ans of correctAnswers) {
             let matches = 0;
@@ -321,31 +320,28 @@ function checkAnswer() {
         document.getElementById('result').textContent = `❌ Faux. Bonne réponse : "${correctAnswers.join('" ou "')}"`;
     }
 
-    // Affichage genre si mot
     if(currentItem.type==='mot' && currentItem.genre){
         document.getElementById('info').textContent = `Genre : ${currentItem.genre==='m'?'masculin':currentItem.genre==='f'?'féminin':'neutre'}`;
     }
-
 }
 
-// Entrée clavier
-let answered = false; // nouvelle variable pour suivre l'état de la question
-document.getElementById('answer').addEventListener('keydown', function(e){
-    if(e.key === 'Enter'){
-        if(!answered){
-            checkAnswer();   // première fois : valide la réponse
-            answered = true; // on marque la question comme répondue
-        } else {
-            nextQuestion();  // deuxième fois : passe à la question suivante
-            answered = false; // réinitialisation pour la prochaine question
-        }
+// ========================
+// Gestion du bouton unique
+// ========================
+actionButton.addEventListener('click', function() {
+    if(!answered){
+        checkAnswer();
+        answered = true;
+        actionButton.textContent = "Prochaine question";
+    } else {
+        nextQuestion();
     }
 });
 
-
+// ========================
 // Lancement première question
+// ========================
 nextQuestion();
-
 </script>
 
 </body>
