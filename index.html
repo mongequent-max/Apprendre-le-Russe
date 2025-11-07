@@ -1,119 +1,198 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apprentissage du russe</title>
-<style>
-/* ======== Base ======== */
-body { font-family: Arial, sans-serif; text-align: center; margin:0; padding:20px; background:#f0f4f8; color:#222; }
-h1 { color:#2c3e50; font-weight:700; margin-bottom:20px; }
-#score { font-size:clamp(1.5rem,4vw,2.5rem); margin-bottom:20px; color:#34495e; }
-#letter { font-size:clamp(4rem,10vw,8rem); margin-bottom:20px; background:#fff; display:inline-block; padding:1rem 2rem; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); min-width:120px; }
-input { font-size:clamp(1rem,4vw,1.5rem); padding:0.8rem 1rem; width:60%; max-width:400px; border:2px solid #ccc; border-radius:8px; box-sizing:border-box; transition:border 0.3s; }
-input:focus { border-color:#3498db; outline:none; }
-button { font-size:clamp(0.8rem,3vw,1.2rem); padding:0.8rem 2rem; margin:10px 5px; border:none; border-radius:8px; background-color:#3498db; color:#fff; cursor:pointer; transition:background 0.3s, transform 0.2s; }
-button:hover { background-color:#2980b9; transform:translateY(-2px); }
-#result { margin-top:20px; font-size:clamp(1rem,3vw,1.5rem); font-weight:500; }
-#info { font-size:clamp(0.9rem,2.5vw,1.2rem); margin-top:10px; color:#555; }
-@media (prefers-color-scheme: dark) {
-    body { background:#1e1e1e; color:#eee; }
-    #letter { background:#2c2c2c; color:#fff; }
-    input, button { background:#333; color:#fff; border-color:#555; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apprentissage du russe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background: #212121;
+            color: #eee;
+        }
+
+        h1 {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        #score {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        #letter {
+            background-color: #171717;
+            color: #fff;
+            display: block;
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            min-width: 120px;
+            max-width: calc(100% - 40px);
+            box-sizing: border-box;
+            text-align: center;
+            white-space: nowrap;
+            margin: 0 auto 20px auto;
+            font-size: 96px;
+        }
+
+        input {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            padding: 0.8rem 1rem;
+            width: 60%;
+            max-width: 400px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border 0.3s;
+            background: #333;
+            color: #fff;
+            border-color: #555;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            font-size: clamp(0.8rem, 3vw, 1.2rem);
+            padding: 0.8rem 2rem;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            background: #333;
+            color: #fff;
+            border-color: #555;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-weight: 500;
+        }
+
+        #info {
+            font-size: clamp(0.9rem, 2.5vw, 1.2rem);
+            margin-top: 10px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
+    <h1>Apprentissage du russe</h1>
+    <div id="score">Note moyenne : 0 / 20</div>
+    <div id="letter"></div>
+    <input type="text" id="answer" placeholder="Translittération ou traduction ici">
+    <div><button id="actionButton">Valider</button></div>
+    <div id="result"></div>
+    <div id="info"></div>
 
-<h1>Apprentissage du russe</h1>
-<div id="score">Note moyenne : 0 / 20</div>
-<div id="letter"></div>
-<input type="text" id="answer" placeholder="Écris la translittération ici">
-<div><button id="actionButton">Valider</button></div>
-<div id="result"></div>
-<div id="info"></div>
+    <script>
+        let russianLearning = [];
+        let currentItem = null;
+        let scores = [];
+        let answered = false;
+        const actionButton = document.getElementById('actionButton');
 
-<script>
-let russianLearning = [];  // tableau vide, on remplira avec fetch
-let currentItem = null;
-let scores = [];
-let answered = false;
-const actionButton = document.getElementById('actionButton');
-
-function nextQuestion() {
-    answered = false;
-    actionButton.textContent = "Valider";
-    const index = Math.floor(Math.random() * russianLearning.length);
-    currentItem = russianLearning[index];
-    document.getElementById('letter').textContent = currentItem.cyr || '';
-    document.getElementById('answer').value = '';
-    document.getElementById('result').textContent = '';
-    document.getElementById('info').textContent = '';
-    document.getElementById('answer').focus();
-}
-
-function checkAnswer() {
-    const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
-    if (!currentItem) return;
-    const correctAnswers = currentItem.trans.map(a => a.toLowerCase());
-    let score = 0;
-
-    if (correctAnswers.includes(userAnswer)) {
-        score = 20;
-        document.getElementById('result').style.color = 'green';
-    } else {
-        document.getElementById('result').style.color = 'red';
-        let bestPartial = 0;
-        for (let ans of correctAnswers) {
-            let matches = 0;
-            const len = Math.max(ans.length, userAnswer.length);
-            for(let i=0;i<len;i++){ if(userAnswer[i] && ans[i] && userAnswer[i]===ans[i]) matches++; }
-            const partialScore = Math.round((matches/ans.length)*20);
-            if(partialScore>bestPartial) bestPartial=partialScore;
+        function nextQuestion() {
+            answered = false;
+            actionButton.textContent = "Valider";
+            const index = Math.floor(Math.random() * russianLearning.length);
+            currentItem = russianLearning[index];
+            document.getElementById('letter').textContent = currentItem.cyr || '';
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('info').textContent = '';
+            document.getElementById('answer').focus();
+            document.getElementById('letter').textContent = currentItem.cyr || '';
+            adjustFontSize();
         }
-        score = bestPartial;
-    }
 
-    scores.push(score);
-    const sum = scores.reduce((a,b)=>a+b,0);
-    const average = (sum/scores.length).toFixed(1);
-    document.getElementById('score').textContent = `Note moyenne : ${average} / 20`;
+        function adjustFontSize() {
+            const letterDiv = document.getElementById('letter');
+            let fontSize = 96;
+            letterDiv.style.fontSize = fontSize + 'px';
 
-    document.getElementById('result').textContent = score===20 ? 
-        `✅ Correct ! Bonne réponse : "${correctAnswers.join('" ou "')}"` :
-        `❌ Faux. Bonne réponse : "${correctAnswers.join('" ou "')}"`;
+            while (letterDiv.scrollWidth > letterDiv.clientWidth && fontSize > 10) {
+                fontSize -= 1;
+                letterDiv.style.fontSize = fontSize + 'px';
+            }
+        }
 
-    if(currentItem.type==='mot' && currentItem.genre){
-        document.getElementById('info').textContent = `Genre : ${currentItem.genre==='m'?'masculin':currentItem.genre==='f'?'féminin':'neutre'}`;
-    }
-}
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            if (!currentItem) return;
+            const correctAnswers = currentItem.trans.map(a => a.toLowerCase());
+            let score = 0;
 
-actionButton.addEventListener('click', function() {
-    if(!answered){
-        checkAnswer();
-        answered = true;
-        actionButton.textContent = "Prochaine question";
-    } else {
-        nextQuestion();
-    }
-});
+            if (correctAnswers.includes(userAnswer)) {
+                score = 20;
+                document.getElementById('result').style.color = 'green';
+            } else {
+                document.getElementById('result').style.color = 'red';
+                let bestPartial = 0;
+                for (let ans of correctAnswers) {
+                    let matches = 0;
+                    const len = Math.max(ans.length, userAnswer.length);
+                    for (let i = 0; i < len; i++) { if (userAnswer[i] && ans[i] && userAnswer[i] === ans[i]) matches++; }
+                    const partialScore = Math.round((matches / ans.length) * 20);
+                    if (partialScore > bestPartial) bestPartial = partialScore;
+                }
+                score = bestPartial;
+            }
 
-document.getElementById('answer').addEventListener('keydown', function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        actionButton.click();
-    }
-});
+            scores.push(score);
+            const sum = scores.reduce((a, b) => a + b, 0);
+            const average = (sum / scores.length).toFixed(1);
+            document.getElementById('score').textContent = `Note moyenne : ${average} / 20`;
 
-// ======= Chargement du JSON =======
-fetch('list.json')
-    .then(response => response.json())
-    .then(data => {
-        russianLearning = data;
-        nextQuestion();  // lance la première question après chargement
-    })
-    .catch(err => console.error('Erreur chargement JSON :', err));
-</script>
+            document.getElementById('result').textContent = score === 20 ?
+                `✅ Correct : "${correctAnswers.join('" ou "')}"` :
+                `❌ Faux : "${correctAnswers.join('" ou "')}"`;
 
+            if (currentItem.type === 'mot' && currentItem.genre) {
+                document.getElementById('info').textContent = `Genre : ${currentItem.genre === 'm' ? 'masculin' : currentItem.genre === 'f' ? 'féminin' : 'neutre'}`;
+            }
+        }
+
+        actionButton.addEventListener('click', function () {
+            if (!answered) {
+                checkAnswer();
+                answered = true;
+                actionButton.textContent = "Prochaine question";
+            } else {
+                nextQuestion();
+            }
+        });
+
+        document.getElementById('answer').addEventListener('keydown', function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                actionButton.click();
+            }
+        });
+
+        fetch('list.json')
+            .then(response => response.json())
+            .then(data => {
+                russianLearning = data;
+                nextQuestion();
+            })
+            .catch(err => console.error('Erreur chargement JSON :', err));
+    </script>
 </body>
 </html>
