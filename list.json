@@ -750,7 +750,7 @@
     {"cyr":"приглашать","trans":["priglashat’","inviter"],"genre":"n"},
     {"cyr":"эффект","trans":["effekt","effet"],"genre":"m"},
     {"cyr":"размышлять","trans":["razmyshlyat’","réfléchir"],"genre":"n"},
-    
+
     {"cyr":"как дела?","trans":["kak dela?","comment ça va ?"]},
     {"cyr":"хорошо","trans":["khorosho","bien"]},
     {"cyr":"куда вы идёте?","trans":["kuda vy idyote?","ou allez-vous"]},
@@ -819,5 +819,12 @@
     {"cyr":"а я живу в Киеве","trans":["a ya zhivu v Kieve","et moi, j'habite à Kiev"]},
     {"cyr":"а где живёт ваш брат?","trans":["a gde zhivyot vash brat?","et où habite votre frère ?"]},
     {"cyr":"он живёт в Одессе","trans":["on zhivyot v Odesse","il habite à Odessa"]},
-    {"cyr":"о, это очень красивый город","trans":["o, eto ochen krasivyy gorod","oh, c'est une très jolie ville"]}
+    {"cyr":"о, это очень красивый город","trans":["o, eto ochen krasivyy gorod","oh, c'est une très jolie ville"]},
+    
+    {"cyr":"e non accentué se prononce comme ?","trans":["i"]},
+    {"cyr":"o non accentué se prononce comme ?","trans":["a"]},
+    {"cyr":"Le й ne s'emploie qu'après ?","trans":["une voyelle","On dit 'i'"]},
+    {"cyr":"Le son ы se situe entre","trans":["ou et i","вы = voui notez vy"]},
+    {"cyr":"La lettre э donne le son","trans":["è"]},
+    {"cyr":"ия se prononce","trans":["illa"]},
 ]
