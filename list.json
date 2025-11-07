@@ -220,5 +220,5 @@
     {"cyr": "а я живу в Киеве", "trans": ["a ya zhivu v Kieve","et moi, j\"habite à Kiev"], "type": "phrase" },
     {"cyr": "а где живёт ваш брат?", "trans": ["a gde zhivyot vash brat?","et où habite votre frère ?"], "type": "phrase" },
     {"cyr": "он живёт в Одессе", "trans": ["on zhivyot v Odesse","il habite à Odessa"], "type": "phrase" },
-    {"cyr": "о, это очень красивый город", "trans": ["o, eto ochen krasivyy gorod","oh, c\"est une très jolie ville"], "type": "phrase" },
+    {"cyr": "о, это очень красивый город", "trans": ["o, eto ochen krasivyy gorod","oh, c\"est une très jolie ville"], "type": "phrase" }
 ]
