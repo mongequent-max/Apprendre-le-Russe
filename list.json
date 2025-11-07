@@ -1,14 +1,4 @@
 [
-    { "cyr": "А", "trans": ["a"], "type": "lettre" },
-    { "cyr": "Б", "trans": ["b"], "type": "lettre" },
-    { "cyr": "В", "trans": ["v"], "type": "lettre" },
-
-    { "cyr": "папа", "trans": ["papa", "papa"], "type": "mot", "genre": "m" },
-    { "cyr": "дама", "trans": ["dama", "dame"], "type": "mot", "genre": "f" },
-
-    { "cyr": "здравствуйте", "trans": ["zdravstvuite", "bonjour"], "type": "phrase" },
-    { "cyr": "как дела?", "trans": ["kak dela?", "comment ça va ?"], "type": "phrase" }
-
     {"cyr": "А", "trans": ["a"], "type": "lettre" },
     {"cyr": "Б", "trans": ["b"], "type": "lettre" },
     {"cyr": "В", "trans": ["v"], "type": "lettre" },
@@ -222,3 +212,4 @@
     {"cyr": "он живёт в Одессе", "trans": ["on zhivyot v Odesse","il habite à Odessa"], "type": "phrase" },
     {"cyr": "о, это очень красивый город", "trans": ["o, eto ochen krasivyy gorod","oh, c\"est une très jolie ville"], "type": "phrase" }
 ]
+
