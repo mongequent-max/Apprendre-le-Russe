@@ -60,6 +60,15 @@ button {
 button:hover { background-color: #2980b9; transform: translateY(-2px); }
 #result { margin-top: 20px; font-size: clamp(1rem, 3vw, 1.5rem); font-weight: 500; }
 #info { font-size: clamp(0.9rem, 2.5vw, 1.2rem); margin-top: 10px; color: #555; }
+#bingContainer {
+    margin-top: 20px;
+}
+iframe {
+    border: 1px solid #555;
+    width: 100%;
+    max-width: 600px;
+    height: 300px;
+}
 </style>
 </head>
 <body>
@@ -75,6 +84,7 @@ button:hover { background-color: #2980b9; transform: translateY(-2px); }
 </div>
 <div id="result"></div>
 <div id="info"></div>
+<div id="bingContainer"></div>
 
 <script>
 let russianLearning = [];
@@ -97,6 +107,9 @@ function nextQuestion() {
     document.getElementById('info').textContent = '';
     document.getElementById('answer').focus();
     adjustFontSize();
+
+    // Supprime iframe Bing précédent
+    document.getElementById('bingContainer').innerHTML = '';
 }
 
 function adjustFontSize() {
@@ -171,15 +184,17 @@ document.getElementById('answer').addEventListener('keydown', function (event) {
 });
 
 listenButton.addEventListener('click', () => {
-    if (!currentItem) return;
-    const text = currentItem.cyr.trim();
-    if (!text) return;
-
-    const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${encodeURIComponent(text)}`;
-    const audio = new Audio(url);
-    audio.play()
-        .then(() => console.log(`Lecture de "${text}"`))
-        .catch(err => console.error(`Impossible de lire : ${err}`));
+    if (!currentItem || !currentItem.cyr) return;
+    
+    const word = encodeURIComponent(currentItem.cyr);
+    const bingUrl = `https://www.bing.com/translator?from=ru&to=fr&text=${word}`;
+    
+    const container = document.getElementById('bingContainer');
+    container.innerHTML = '';
+    
+    const iframe = document.createElement('iframe');
+    iframe.src = bingUrl;
+    container.appendChild(iframe);
 });
 
 fetch('list.json')
