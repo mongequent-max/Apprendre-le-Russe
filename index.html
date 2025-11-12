@@ -28,23 +28,35 @@ h1 { color: #fff; font-weight: 700; margin-bottom: 20px; }
     box-sizing: border-box;
     text-align: center;
     white-space: nowrap;
-    margin: 0 auto 20px auto;
     font-size: 96px;
 }
-input {
-    font-size: clamp(1rem, 4vw, 1.5rem);
-    padding: 0.8rem 1rem;
-    width: 60%;
-    max-width: 400px;
-    border: 2px solid #ccc;
-    border-radius: 8px;
+.separator {
+    all: unset;
+    display: block;
+    height: 2px;
+    background-color: #4db8ff;
+    max-width: calc(100% - 40px);
+    min-width: 120px;
+    border-radius: 1rem;
     box-sizing: border-box;
-    transition: border 0.3s;
-    background: #333;
-    color: #fff;
-    border-color: #555;
 }
-input:focus { border-color: #3498db; outline: none; }
+input {
+    all: unset;
+    background-color: #171717;
+    color: #fff;
+    display: block;
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    min-width: 120px;
+    max-width: calc(100% - 40px);
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 96px;
+    width: 100%;
+}
+input::placeholder { color: #555; }
 button {
     font-size: clamp(0.8rem, 3vw, 1.2rem);
     padding: 0.8rem 2rem;
@@ -75,7 +87,8 @@ iframe {
 <h1>Apprentissage du russe</h1>
 <div id="score">Note moyenne : 0 / 20</div>
 <div id="letter"></div>
-<input type="text" id="answer" placeholder="Translittération ou traduction ici">
+<hr class="separator">
+<input type="text" id="answer" placeholder="Translittération ou traduction">
 <div>
     <button id="listenButton">🔊</button>
 </div>
@@ -98,18 +111,157 @@ const listenButton = document.getElementById('listenButton');
 function nextQuestion() {
     answered = false;
     actionButton.textContent = "Valider";
+
     const index = Math.floor(Math.random() * russianLearning.length);
     currentItem = russianLearning[index];
+
     const letterDiv = document.getElementById('letter');
     letterDiv.textContent = currentItem.cyr || '';
+
+    // ✅ Si le champ "answer" a été remplacé par un <div>, on le recrée proprement
+    const oldAnswer = document.getElementById('answer');
+    if (oldAnswer.tagName.toLowerCase() !== 'input') {
+        const newInput = document.createElement('input');
+    newInput.type = "text";
+    newInput.id = "answer";
+    newInput.placeholder = "Translittération ou traduction";
+    newInput.style.all = "unset";
+    newInput.style.backgroundColor = "#171717";
+    newInput.style.color = "#fff";
+    newInput.style.display = "block";
+    newInput.style.padding = "1rem 2rem";
+    newInput.style.borderRadius = "1rem";
+    newInput.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+    newInput.style.minWidth = "120px";
+    newInput.style.maxWidth = "calc(100% - 40px)";
+    newInput.style.boxSizing = "border-box";
+    newInput.style.textAlign = "center";
+    newInput.style.whiteSpace = "nowrap";
+    newInput.style.fontSize = "96px";
+    newInput.style.width = "100%";
+        oldAnswer.replaceWith(newInput);
+
+        // Réattacher l'événement "Enter"
+    newInput.addEventListener('keydown', function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                actionButton.click();
+            }
+        });
+    }
+
     document.getElementById('answer').value = '';
     document.getElementById('result').textContent = '';
     document.getElementById('info').textContent = '';
     document.getElementById('answer').focus();
     adjustFontSize();
-
-    // Supprime iframe Bing précédent
     document.getElementById('bingContainer').innerHTML = '';
+}
+
+function checkAnswer() {
+    const inputEl = document.getElementById('answer');
+    const userAnswer = inputEl.value.trim().toLowerCase();
+    if (!currentItem) return;
+
+    const correctAnswers = currentItem.trans.map(a => a.toLowerCase());
+    const correct = correctAnswers[0];
+    let score = 0;
+    let displayHTML = "";
+
+    // 🔹 Fonction utilitaire : "diff" basique pour colorer intelligemment
+    function diffStrings(user, target) {
+        let result = "";
+        let i = 0, j = 0;
+        let matches = 0;
+
+        while (i < user.length || j < target.length) {
+            const u = user[i];
+            const t = target[j];
+
+            if (u === t) {
+                result += `<span style="color:limegreen">${t}</span>`;
+                i++; j++; matches++;
+            } 
+            else if (u === undefined) { 
+                // l'utilisateur a fini plus tôt → manque des lettres
+                result += `<span style="color:red">${t}</span>`;
+                j++;
+            }
+            else if (t === undefined) { 
+                // l'utilisateur a écrit trop
+                i++;
+            }
+            else if (user[i+1] === t) {
+                // utilisateur a inséré un caractère en trop
+                i++;
+            }
+            else if (user[i] === target[j+1]) {
+                // utilisateur a oublié un caractère
+                result += `<span style="color:red">${t}</span>`;
+                j++;
+            }
+            else {
+                // caractère différent
+                result += `<span style="color:red">${t}</span>`;
+                i++; j++;
+            }
+        }
+        const similarity = matches / target.length;
+        return { html: result, score: Math.round(similarity * 20) };
+    }
+
+    let diff = diffStrings(userAnswer, correct);
+    score = diff.score;
+    displayHTML = diff.html;
+
+    // ✅ Si tout juste
+    if (score === 20) {
+        document.getElementById('result').style.color = 'green';
+    } else {
+        document.getElementById('result').style.color = 'red';
+    }
+
+    // Score et moyenne
+    scores.push(score);
+    const sum = scores.reduce((a, b) => a + b, 0);
+    const average = (sum / scores.length).toFixed(1);
+    document.getElementById('score').textContent = `Note moyenne : ${average} / 20`;
+
+    // Texte résultat
+    document.getElementById('result').textContent = score === 20 ?
+        `✅ Correct : "${correctAnswers.join('" ou "')}"` :
+        `❌ Faux : "${correctAnswers.join('" ou "')}"`;
+
+    // Genre
+    if (currentItem.genre) {
+        document.getElementById('info').textContent = `Genre : ${
+            currentItem.genre === 'm' ? 'masculin' :
+            currentItem.genre === 'f' ? 'féminin' :
+            'neutre'
+        }`;
+    } else {
+        document.getElementById('info').textContent = '';
+    }
+
+    // Affichage dans le champ
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = displayHTML;
+    inputEl.replaceWith(wrapper);
+    wrapper.id = "answer";
+    wrapper.style.all = "unset";
+    wrapper.style.backgroundColor = "#171717";
+    wrapper.style.color = "#fff";
+    wrapper.style.display = "block";
+    wrapper.style.padding = "1rem 2rem";
+    wrapper.style.borderRadius = "1rem";
+    wrapper.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+    wrapper.style.minWidth = "120px";
+    wrapper.style.maxWidth = "calc(100% - 40px)";
+    wrapper.style.boxSizing = "border-box";
+    wrapper.style.textAlign = "center";
+    wrapper.style.whiteSpace = "nowrap";
+    wrapper.style.fontSize = "96px";
+    wrapper.style.width = "100%";
 }
 
 function adjustFontSize() {
@@ -119,50 +271,6 @@ function adjustFontSize() {
     while (letterDiv.scrollWidth > letterDiv.clientWidth && fontSize > 10) {
         fontSize -= 1;
         letterDiv.style.fontSize = fontSize + 'px';
-    }
-}
-
-function checkAnswer() {
-    const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
-    if (!currentItem) return;
-    const correctAnswers = currentItem.trans.map(a => a.toLowerCase());
-    let score = 0;
-
-    if (correctAnswers.includes(userAnswer)) {
-        score = 20;
-        document.getElementById('result').style.color = 'green';
-    } else {
-        document.getElementById('result').style.color = 'red';
-        let bestPartial = 0;
-        for (let ans of correctAnswers) {
-            let matches = 0;
-            const len = Math.max(ans.length, userAnswer.length);
-            for (let i = 0; i < len; i++) { 
-                if (userAnswer[i] && ans[i] && userAnswer[i] === ans[i]) matches++; 
-            }
-            const partialScore = Math.round((matches / ans.length) * 20);
-            if (partialScore > bestPartial) bestPartial = partialScore;
-        }
-        score = bestPartial;
-    }
-
-    scores.push(score);
-    const sum = scores.reduce((a, b) => a + b, 0);
-    const average = (sum / scores.length).toFixed(1);
-    document.getElementById('score').textContent = `Note moyenne : ${average} / 20`;
-
-    document.getElementById('result').textContent = score === 20 ?
-        `✅ Correct : "${correctAnswers.join('" ou "')}"` :
-        `❌ Faux : "${correctAnswers.join('" ou "')}"`;
-
-    if (currentItem.genre) {
-        document.getElementById('info').textContent = `Genre : ${
-            currentItem.genre === 'm' ? 'masculin' :
-            currentItem.genre === 'f' ? 'féminin' :
-            'neutre'
-        }`;
-    } else {
-        document.getElementById('info').textContent = '';
     }
 }
 
